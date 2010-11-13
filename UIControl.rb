@@ -25,7 +25,7 @@ class UIController
       f = File.open(@inputFile, "r")
     end
     f.each do |line|
-      next if line =~ /^\/\// or line =~ /^[\s]*$/
+      next if line =~ /^\/\//
       opts = format_input(line)
       out_put = tm.read(opts)
       unless out_put.nil?
@@ -44,8 +44,11 @@ class UIController
 
  private
   def format_input(line)
-    opts = line.split(';')
     result = []
+    if line =~ /^[\s]*$/
+      return result << ["advance"]
+    end
+    opts = line.split(';')
     for op in opts
       @pattern =~ op
       data = Regexp.last_match
