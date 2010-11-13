@@ -29,7 +29,7 @@ class UIController
       opts = format_input(line)
       out_put = tm.read(opts)
       unless out_put.nil?
-        if @outputFile == STDOUT
+        if @outputFile == STDOUT or @outputFile.nil?
           STDOUT.puts out_put
         else
           File.open(@outputFile, "a") do |log|
