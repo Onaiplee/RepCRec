@@ -25,7 +25,7 @@ class UIController
       f = File.open(@inputFile, "r")
     end
     f.each do |line|
-      next if line =~ /^\/\//
+      next if line =~ /^\/\// or line =~ /^[\s]*$/
       opts = format_input(line)
       out_put = tm.read(opts)
       unless out_put.nil?
