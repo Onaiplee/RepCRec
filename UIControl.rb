@@ -30,6 +30,7 @@ class UIController
       out_put = tm.read(opts)
       unless out_put.nil?
         if @outputFile == STDOUT or @outputFile.nil?
+          print "Message from output of TM: "
           STDOUT.puts out_put
         else
           File.open(@outputFile, "a") do |log|
