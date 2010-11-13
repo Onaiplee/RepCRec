@@ -25,12 +25,16 @@ class UIController
       f = File.open(@inputFile, "r")
     end
     f.each do |line|
-      next if line =~ /^\\\\/
+      next if line =~ /^\/\//
       opts = format_input(line)
       out_put = tm.read(opts)
       unless out_put.nil?
-        File.open(ouputFile, "a") do |log|
-          log.puts out_put
+        if @outputFile == STDOUT
+          STDOUT.puts out_put
+        else
+          File.open(@outputFile, "a") do |log|
+            log.puts out_put
+          end
         end
       end
     end
@@ -59,6 +63,11 @@ end
 
 ##### Run it ####
 if $0 == __FILE__
-  g = UIController.new
+  if ARGV.empty?
+    g = UIController.new
+  else
+    input, output = ARGV
+    g = UIController.new(input, output)
+  end
   g.run
 end
