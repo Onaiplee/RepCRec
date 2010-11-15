@@ -58,6 +58,7 @@ class UIController
         op_code << (params.length+1).to_s
       end
       params = params.split(",")
+      params.map { |p| p.strip! }
       result << [op_code, params].flatten
     end
     result
