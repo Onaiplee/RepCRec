@@ -39,6 +39,17 @@ class UIController
         end
       end
     end
+    out_put = tm.read([["advance"]])
+    unless out_put.nil?
+      if @outputFile == STDOUT or @outputFile.nil?
+        print "Message from output of TM: "
+        STDOUT.puts out_put
+      else
+        File.open(@outputFile, "a") do |log|
+          log.puts out_put
+        end
+      end
+    end
     f.close
   end
 
