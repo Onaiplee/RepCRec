@@ -24,9 +24,12 @@ class UIController
     else
       f = File.open(@inputFile, "r")
     end
+    mark = false
     f.each do |line|
       next if line =~ /^\/\//
+      next if line =~ /^[\s]*$/ and mark == false 
       opts = format_input(line)
+      mark = true if mark == false
       out_put = tm.read(opts)
       unless out_put.nil?
         if @outputFile == STDOUT or @outputFile.nil?
