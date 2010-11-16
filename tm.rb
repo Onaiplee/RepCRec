@@ -55,8 +55,8 @@ class TM
       when "dump2" then dumpSite(operation[1])
       when "dump3" then dumpVar(operation[1])
       when "end"  then endT(operation[1])
-      when "fail" then failS(operation[1])
-      when "recover" then recoverS(operation[1])
+      when "fail" then output += failS(operation[1])
+      when "recover" then output += recoverS(operation[1])
       when "advance" then advance
       else puts "Error! No such operation: #{operation[0]}"
     end
@@ -124,11 +124,13 @@ class TM
   def failS(s_id)
     s = "site#{s_id}"
     @siteTable[s].fail(@globalTime)
+    return "\n\t Site#{s_id} fails"
   end
 
   def recoverS(s_id)
     s = "site#{s_id}"
     @siteTable[s].recover
+    return "\n\t Site#{s_id} recovers"
   end
 
   def wait?(t_id, v_id, type, ts)

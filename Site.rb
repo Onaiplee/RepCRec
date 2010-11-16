@@ -127,6 +127,8 @@ class Site
 
   def recover
     @status= "live"
+    @dm.recover
+    @lm= LM.new(@s_id, @dm.variableTable)
   end
 
 end

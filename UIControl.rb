@@ -24,11 +24,11 @@ class UIController
       out_put = tm.read(opts)
       unless out_put.nil?
         if @outputFile == STDOUT or @outputFile.nil?
-          print "Message from output of TM: "
-          STDOUT.puts out_put
+          #print "Message from output of TM: "
+          STDOUT.puts out_put.strip!
         else
           File.open(@outputFile, "a") do |log|
-            log.puts out_put
+            log.puts out_put.strip!
           end
         end
       end
@@ -36,7 +36,7 @@ class UIController
     out_put = tm.read([["advance"]])
     unless out_put.nil?
       if @outputFile == STDOUT or @outputFile.nil?
-        print "Message from output of TM: "
+        #print "Message from output of TM: "
         STDOUT.puts out_put
       else
         File.open(@outputFile, "a") do |log|
@@ -73,6 +73,10 @@ end
 
 ##### Run it ####
 if $0 == __FILE__
+  #if ARGV = []
+  #  puts "Usage: ruby UIControl.rb [inputfile] [outputfile]"
+  #  puts "If no inputfile or outputfile, STDIN or STDOUT is the default." 
+  #end
   if ARGV.empty?
     g = UIController.new
   else

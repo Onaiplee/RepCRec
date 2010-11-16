@@ -1,5 +1,5 @@
 require "pstore"
-require "pp"
+require 'pp'
 
 class Database
   def initialize(storeFile = "database.dat")
@@ -18,11 +18,4 @@ class Database
       @store[var]
     end
   end
-end
-
-
-if $0 == __FILE__
-  d = Database.new
-  #d.write("x3", [1,2,3,4,5,6,7])
-  pp d.read("x3")
 end

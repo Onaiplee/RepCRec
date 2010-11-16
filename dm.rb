@@ -3,9 +3,12 @@
 # s_id: the site id
 # VariableTable: VariableID => Value
 
+load "database.rb"
+require 'pp'
+
 class DM
 
-  attr_reader :variableTable, :dataTable, :nonRepList, :isReadTable
+  attr_reader :variableTable, :dataTable, :nonRepList, :isReadTable, :db
 
   def initialize(s_id= "site0")
     @s_id= s_id
@@ -13,6 +16,7 @@ class DM
     @dataTable= Hash.new
     @nonRepList= Array.new
     @isReadTable= Hash.new
+    @db= Database.new("#{@s_id}.dat")
     c= Configure.new
     c.configTable[:variables].each do |v|
       c.configTable[v.to_sym][:rep_sites].each do |id|
@@ -27,6 +31,10 @@ class DM
         end
       end
     end
+    @dataTable.each do |k, v|
+      @db.write("#{k}", v)
+    end
+    #@db.write("dataTable", @dataTable)
   end
 
   def readV(v_id)
@@ -58,11 +66,12 @@ class DM
     vs.each do |v_id|
       #把数据copy数据库
       @dataTable[v_id] << [@variableTable[v_id], time]
+      @db.write("#{v_id}", [@variableTable[v_id], time])
     end
   end
 
   def recover()
-    @variableTable.each do |v|
+    @variableTable.each do |v, r|
       @variableTable[v]= @dataTable[v][-1][0]
     end
     @isReadTable.each do |v, r|
