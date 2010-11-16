@@ -1,4 +1,5 @@
 require "pstore"
+require "pp"
 
 class Database
   def initialize(storeFile = "database.dat")
@@ -22,6 +23,6 @@ end
 
 if $0 == __FILE__
   d = Database.new
-  d.write("x3", 7)
-  puts d.read("x3")
+  #d.write("x3", [1,2,3,4,5,6,7])
+  pp d.read("x3")
 end

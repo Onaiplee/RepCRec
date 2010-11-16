@@ -1,15 +1,6 @@
-require 'pp'
+require 'rubygems'
+load 'TM.rb'
 
-class TM
-  def initialize
-  end
-  
-  def read(opts)
-    pp opts
-    return
-  end
-end
-    
 class UIController
   def initialize(input = STDIN, output = STDOUT)
     @inputFile = input
@@ -27,7 +18,7 @@ class UIController
     mark = false
     f.each do |line|
       next if line =~ /^\/\//
-      next if line =~ /^[\s]*$/ and mark == false 
+      next if line =~ /^[\s]*$/ and mark == false
       opts = format_input(line)
       mark = true if mark == false
       out_put = tm.read(opts)
