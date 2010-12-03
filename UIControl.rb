@@ -10,15 +10,23 @@ load 'TM.rb'
 # * 3.Get responses from TM and output them
 
 class UIController
+
+  #input format
+  attr_reader :inputFile
+  #output format
+  attr_reader :outputFile
+  #pattern for an instruction
+  attr_reader :pattern
+
   # * Initialize input and output format. Use standard input and output as default
   # * Define pattern of an instruction
   # * Bind a transaction manager(TM)
   def initialize(tm, input = STDIN, output = STDOUT)
-    #input format
+
     @inputFile = input
-    #output format
+
     @outputFile = output
-    #pattern for an instruction
+
     @pattern = /([\w]+)([\s]*)\(([\w\s,]*)\)/
     #the transaction manager
     @tm = tm
