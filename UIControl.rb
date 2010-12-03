@@ -98,7 +98,8 @@ class UIController
 end
 
 
-##### Run it ####
+# * Start an UIControl to communicate with user
+# * Start a TM
 if $0 == __FILE__
   #if ARGV = []
   #  puts "Usage: ruby UIControl.rb [inputfile] [outputfile]"
