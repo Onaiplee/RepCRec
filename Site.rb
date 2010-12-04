@@ -3,16 +3,16 @@
 # Lock Manager
 # Status: live, fail
 
-load 'DM.rb'
-load 'LM.rb'
-load 'Message.rb'
+require './DM.rb'
+require './LM.rb'
+require './Message.rb'
 require 'xmlrpc/server'
 
 class Site
 
   attr_reader :s_id, :status, :failTime
 
-  def initialize (id= "site0", port)
+  def initialize (id = "site0", port)
     @s_id= id
     @status= "live"
     @dm= DM.new(@s_id)
@@ -21,12 +21,16 @@ class Site
     @port = port
   end
 
-  def getMessage(messages)
-    rms= Array.new
+  def getMessage(messagesStringArray)
+    messages = []
+    messagesStringArray.each { |s| messages << Message.new(*eval(s)) }
+    rms = Array.new
     messages.each do |m|
-      rm= processMessage(m)
-      rms << rm
+      rm = processMessage(m)
+      rmArray = [rm.time, rm.t_id, rm.type, rm.v_id, rm.value, rm.s_id, rm.result, rm.var]
+      rms << rmArray.to_s
     end
+    pp rms
     return rms
   end
 
@@ -127,12 +131,11 @@ class Site
     @failTime= time
   end
 
-  def recover
+  def recover(time)
     @status= "live"
     @dm.recover
     @lm= LM.new(@s_id, @dm.variableTable)
   end
-
 end
 
 class SiteHelper

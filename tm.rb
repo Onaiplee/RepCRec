@@ -9,10 +9,10 @@
 require 'xmlrpc/server'
 require 'xmlrpc/client'
 require 'pp'
-load 'Transaction.rb'
+require './Transaction.rb'
 #load 'Site.rb'
-load 'Configure.rb'
-load 'Message.rb'
+require './Configure.rb'
+require './Message.rb'
 
 class TM
 
@@ -23,12 +23,12 @@ class TM
     @variableTable= Hash.new
     @siteBuffer= Hash.new
     @rpcc = Hash.new
-    c= Configure.new
+    c = Configure.new
     c.configTable[:sites].each do |s|
     #  @siteTable[s]= Site.new(s)
       @siteBuffer[s]= Array.new
-      ip = c.configTable[s][:ip]
-      port = c.configTable[s][:port]
+      ip = c.configTable[s.to_sym][:ip]
+      port = c.configTable[s.to_sym][:port]
       @rpcc[s] = XMLRPC::Client.new(ip, "/RPC2", port)
     #  @rpcc[s].call("Site.xxx", argument ... )
     end
@@ -129,13 +129,15 @@ class TM
 
   def failS(s_id)
     s = "site#{s_id}"
-    @siteTable[s].fail(@globalTime)
+    puts "rpcc[s].call site.fail"
+    @rpcc[s].call("Site.fail", @globalTime)
     return "\n\t Site#{s_id} fails"
   end
 
   def recoverS(s_id)
     s = "site#{s_id}"
-    @siteTable[s].recover
+    puts "rpcc[s].call site.recover"
+    @rpcc[s].call("Site.recover", @globalTime)
     return "\n\t Site#{s_id} recovers"
   end
 
@@ -171,12 +173,20 @@ class TM
       end
     end
     @blockTable.clear
+    messagesStringArray = []
     @siteBuffer.each do |s_id, messages|
       if not messages.empty?
         messages.each do |m|
           @debug.puts "#{s_id} #{m.time} #{m.t_id} #{m.type} #{m.v_id} #{m.value} #{m.var} #{m.s_id}"
+          messageArray = [m.time, m.t_id, m.type, m.v_id, m.value, m.s_id, m.result, m.var]
+          messagesStringArray << messageArray.to_s
         end
-        rms= @siteTable[s_id].getMessage(messages)
+
+        puts "rpcc.call Site.getMessage"
+        rmsStringArray = @rpcc[s_id].call("Site.getMessage", messagesStringArray)
+        pp rmsStringArray
+        rms = []
+        rmsStringArray.each { |s| rms << Message.new(*eval(s)) }
         rms.each do |rm|
           @debug.puts "return: #{rm.time} #{rm.t_id} #{rm.type} #{rm.v_id} #{rm.value} #{rm.result} #{rm.s_id}"
           if rm.type== "read?" then
