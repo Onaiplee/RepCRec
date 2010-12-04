@@ -6,7 +6,7 @@
 #VariableTable: Variable ID => Array of Replicated Sites ID
 #BlockTable: TransactionID =>  BlockedOperation
 #SiteBuffer: SiteID => Message
-
+require "xmlrpc/server"
 require 'pp'
 load 'Transaction.rb'
 load 'Site.rb'
@@ -306,4 +306,10 @@ class TM
     return output
   end
 
+end
+
+if $0 == __FILE__
+  s = XMLRPC::Server.new(20000)
+  s.add_handler("TransactionManager", TM.new)
+  s.serve
 end

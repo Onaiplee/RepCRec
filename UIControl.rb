@@ -2,12 +2,23 @@
 # with replicated concurrency control and recovery
 
 require 'rubygems'
-load 'TM.rb'
+require 'xmlrpc/client'
 
 # This class(UIController) is a user interface with following functions:
 # * 1.Read the user input instructions from a file or the standard input
 # * 2.Translate the instructions into concrete operations and send them to the Transaction Manager(TM)
 # * 3.Get responses from TM and output them
+
+class TM
+  def initialize(host="localhost", path="/RPC2", port=20000) 
+    @server = XMLRPC::Client.new(host, path, port)
+  end
+
+  def read(opts)
+    @server.call("TransactionManager.read", opts)
+  end
+end
+    
 
 class UIController
 
@@ -29,8 +40,9 @@ class UIController
 
     @pattern = /([\w]+)([\s]*)\(([\w\s,]*)\)/
     #the transaction manager
+
     @tm = tm
-  end
+  end 
 
   # * 1.Read the user input instructions from a file or the standard input
   # * 2.Translate the instructions into concrete operations and send them to the Transaction Manager(TM)
@@ -74,7 +86,7 @@ class UIController
         end
       end
     end
-
+    
     f.close
 
   end
