@@ -17,6 +17,12 @@ class Configure
       rep_sites = @myConfig.params[v]['sites'].split(", ")
       @configTable[v.to_sym] = {:value => value, :rep_sites => rep_sites}
     end
+
+    @configTable[:sites].each do |v|
+      ip = @myConfig.params[v]['ip']
+      port = @myConfig.params[v]['port']
+      @configTable[v.to_sym] = { :ip => ip, :port => port }
+    end
   end
 
   def each

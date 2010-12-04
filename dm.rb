@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-1 -*-
 # Data Manager
 
 # s_id: the site id
@@ -5,6 +6,7 @@
 
 load "database.rb"
 require 'pp'
+require './Configure.rb'
 
 class DM
 
@@ -17,7 +19,7 @@ class DM
     @nonRepList= Array.new
     @isReadTable= Hash.new
     @db= Database.new("#{@s_id}.dat")
-    c= Configure.new
+    c = Configure.new
     c.configTable[:variables].each do |v|
       c.configTable[v.to_sym][:rep_sites].each do |id|
         if id== @s_id

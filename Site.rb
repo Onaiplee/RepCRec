@@ -6,17 +6,19 @@
 load 'DM.rb'
 load 'LM.rb'
 load 'Message.rb'
+require 'xmlrpc/server'
 
 class Site
 
   attr_reader :s_id, :status, :failTime
 
-  def initialize (id= "site0")
+  def initialize (id= "site0", port)
     @s_id= id
     @status= "live"
     @dm= DM.new(@s_id)
     @lm= LM.new(@s_id, @dm.variableTable)
     @failTime= -1
+    @port = port
   end
 
   def getMessage(messages)
@@ -131,4 +133,12 @@ class Site
     @lm= LM.new(@s_id, @dm.variableTable)
   end
 
+end
+
+class SiteHelper
+  def initialize(id, port)
+    @s = XMLRPC::Server.new(port)
+    @s.add_handler("Site", Site.new(id, port))
+    @s.serve
+  end
 end

@@ -6,10 +6,11 @@
 #VariableTable: Variable ID => Array of Replicated Sites ID
 #BlockTable: TransactionID =>  BlockedOperation
 #SiteBuffer: SiteID => Message
-require "xmlrpc/server"
+require 'xmlrpc/server'
+require 'xmlrpc/client'
 require 'pp'
 load 'Transaction.rb'
-load 'Site.rb'
+#load 'Site.rb'
 load 'Configure.rb'
 load 'Message.rb'
 
@@ -18,13 +19,18 @@ class TM
   def initialize
     @globalTime= 0
     @transactionTable= Hash.new
-    @siteTable= Hash.new
+    # @siteTable= Hash.new
     @variableTable= Hash.new
     @siteBuffer= Hash.new
+    @rpcc = Hash.new
     c= Configure.new
     c.configTable[:sites].each do |s|
-      @siteTable[s]= Site.new(s)
+    #  @siteTable[s]= Site.new(s)
       @siteBuffer[s]= Array.new
+      ip = c.configTable[s][:ip]
+      port = c.configTable[s][:port]
+      @rpcc[s] = XMLRPC::Client.new(ip, "/RPC2", port)
+    #  @rpcc[s].call("Site.xxx", argument ... )
     end
     c.configTable[:variables].each do |v|
       @variableTable[v]= c.configTable[v.to_sym][:rep_sites]
