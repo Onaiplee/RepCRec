@@ -129,15 +129,13 @@ class TM
 
   def failS(s_id)
     s = "site#{s_id}"
-    puts "rpcc[s].call site.fail"
     @rpcc[s].call("Site.fail", @globalTime)
     return "\n\t Site#{s_id} fails"
   end
 
   def recoverS(s_id)
     s = "site#{s_id}"
-    puts "rpcc[s].call site.recover"
-    @rpcc[s].call("Site.recover", @globalTime)
+    @rpcc[s].call("Site.recover")
     return "\n\t Site#{s_id} recovers"
   end
 
@@ -173,16 +171,14 @@ class TM
       end
     end
     @blockTable.clear
-    messagesStringArray = []
     @siteBuffer.each do |s_id, messages|
       if not messages.empty?
+        messagesStringArray = []
         messages.each do |m|
           @debug.puts "#{s_id} #{m.time} #{m.t_id} #{m.type} #{m.v_id} #{m.value} #{m.var} #{m.s_id}"
           messageArray = [m.time, m.t_id, m.type, m.v_id, m.value, m.s_id, m.result, m.var]
           messagesStringArray << messageArray.to_s
         end
-
-        puts "rpcc.call Site.getMessage"
         rmsStringArray = @rpcc[s_id].call("Site.getMessage", messagesStringArray)
         pp rmsStringArray
         rms = []

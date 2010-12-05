@@ -30,7 +30,6 @@ class Site
       rmArray = [rm.time, rm.t_id, rm.type, rm.v_id, rm.value, rm.s_id, rm.result, rm.var]
       rms << rmArray.to_s
     end
-    pp rms
     return rms
   end
 
@@ -131,15 +130,17 @@ class Site
     @failTime= time
   end
 
-  def recover(time)
+  def recover
     @status= "live"
     @dm.recover
     @lm= LM.new(@s_id, @dm.variableTable)
+    return 0
   end
 end
 
 class SiteHelper
   def initialize(id, port)
+    trap ("TERM") { exit }
     @s = XMLRPC::Server.new(port)
     @s.add_handler("Site", Site.new(id, port))
     @s.serve
