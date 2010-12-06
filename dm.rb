@@ -4,7 +4,7 @@
 # s_id: the site id
 # VariableTable: VariableID => Value
 
-load "database.rb"
+require './database.rb'
 require 'pp'
 require './Configure.rb'
 

@@ -1,5 +1,6 @@
 require './Site.rb'
 require './Configure.rb'
+require 'xmlrpc/server'
 
 class Starter
   def initialize
@@ -12,7 +13,10 @@ class Starter
       if (pid)
         @pidTable << pid
       else
-        SiteHelper.new(s, port)
+        server = XMLRPC::Server.new(port)
+        server.add_handler("Site", Site.new(s, port))
+        server.serve
+        exit
       end
     end
     while true

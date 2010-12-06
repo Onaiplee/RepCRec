@@ -10,7 +10,6 @@ require 'xmlrpc/server'
 require 'xmlrpc/client'
 require 'pp'
 require './Transaction.rb'
-#load 'Site.rb'
 require './Configure.rb'
 require './Message.rb'
 

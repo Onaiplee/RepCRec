@@ -6,7 +6,6 @@
 require './DM.rb'
 require './LM.rb'
 require './Message.rb'
-require 'xmlrpc/server'
 
 class Site
 
@@ -135,14 +134,5 @@ class Site
     @dm.recover
     @lm= LM.new(@s_id, @dm.variableTable)
     return 0
-  end
-end
-
-class SiteHelper
-  def initialize(id, port)
-    trap ("TERM") { exit }
-    @s = XMLRPC::Server.new(port)
-    @s.add_handler("Site", Site.new(id, port))
-    @s.serve
   end
 end

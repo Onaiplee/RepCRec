@@ -1,5 +1,4 @@
-require 'rubygems'
-require 'parseconfig'
+require './parseconfig.rb'
 require 'pp'
 
 class Configure
