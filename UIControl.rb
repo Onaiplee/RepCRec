@@ -33,11 +33,13 @@ class UIController
   # * Initialize input and output format. Use standard input and output as default
   # * Define pattern of an instruction
   # * Bind a transaction manager(TM)
-  def initialize(tm, input = STDIN, output = STDOUT)
+  def initialize(tm, input = STDIN, output = STDOUT, step = false)
 
     @inputFile = input
 
     @outputFile = output
+
+    @step = step
 
     @pattern = /([\w]+)([\s]*)\(([\w\s,]*)\)/
     #the transaction manager
@@ -63,6 +65,18 @@ class UIController
       next if line =~ /^\/\//
       #skip an empty line before any instruction
       next if mark == false and line =~ /^[\s]*$/
+
+      line_tmp = line.dup
+      line_tmp.chop! if line_tmp[-1] == "\n"
+      if @step == true
+        print "\t\t\t\t\t\t\t", line_tmp
+        while true
+          print ".....Press Enter to continue!", "\n"
+          if STDIN.gets == "\n"
+            break
+          end
+        end
+      end
       opts = format_input(line)
       mark = true if mark == false
       out_put = @tm.read(opts)
@@ -130,8 +144,21 @@ if $0 == __FILE__
   if ARGV.empty?
     g = UIController.new(tm)
   else
-    input, output = ARGV
-    g = UIController.new(tm, input, output)
+    input = STDIN
+    output = STDOUT
+    step = false
+    ARGV.each do |arg|
+      if arg =~ /--with_input/
+        input = arg.split('=')[1]
+        input.strip!
+      elsif arg =~ /--with_output/
+        output = arg.split('=')[1]
+        output.strip!
+      elsif arg =~ /--with_single/
+        step = true
+      end
+    end
+    g = UIController.new(tm, input, output, step)
   end
   g.run
 end
