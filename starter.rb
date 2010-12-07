@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require './tm.rb'
 require './Site.rb'
 require './Configure.rb'

@@ -1,6 +1,7 @@
+#!/usr/bin/env ruby
+
 # This program implement a simulation of distributed databases
 # with replicated concurrency control and recovery
-
 require 'rubygems'
 require 'xmlrpc/client'
 
