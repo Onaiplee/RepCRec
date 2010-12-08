@@ -1,7 +1,8 @@
-require 'rubygems'
-require 'parseconfig'
+require './parseconfig.rb'
 require 'pp'
 
+# Read repcrec.conf to get the initial configuration for variables, sites and networking
+# * Make the program more flexible Part1 and Part2 have different repcrec.conf
 class Configure
   include Enumerable
 

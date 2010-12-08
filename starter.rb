@@ -1,5 +1,9 @@
+#!/usr/bin/env ruby
+
+require './tm.rb'
 require './Site.rb'
 require './Configure.rb'
+require 'xmlrpc/server'
 
 class Starter
   def initialize
@@ -12,7 +16,21 @@ class Starter
       if (pid)
         @pidTable << pid
       else
-        SiteHelper.new(s, port)
+        server = XMLRPC::Server.new(port)
+        server.add_handler("Site", Site.new(s, port))
+        server.serve
+        exit
+      end
+    end
+    if ARGV[0] =~ /--with_tm/
+      pid = fork
+      if (pid)
+        @pidTable << pid
+      else
+        tm = XMLRPC::Server.new(20000)
+        tm.add_handler("TransactionManager", TM.new)
+        tm.serve
+        exit
       end
     end
     while true

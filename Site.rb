@@ -34,7 +34,15 @@ class Site
   end
 
   def processMessage(message)
-    if @status== "fail" then
+    if message.type== "dumpSite" then
+       r = @dm.dumpSite
+       rm = message.clone
+       rm.var = r.clone
+    elsif message.type== "dumpVar" then
+       r = @dm.dumpVar(message.v_id)
+       rm = message.clone
+       rm.var = r.clone
+    elsif @status== "fail" then
       rm= message.clone
       rm.result= "fail"
       rm.var= @failTime
@@ -61,6 +69,12 @@ class Site
     elsif message.type== "commit" then
         commitT(message.t_id, message.time)
         rm= message.clone
+    elsif message.type== "addRep" then
+       addRep(message.v_id)
+       rm= message.clone
+    elsif message.type== "rmRep" then
+       rmRep(message.v_id)
+       rm= message.clone
     end
     return rm
    end
@@ -128,6 +142,7 @@ class Site
   def fail(time)
     @status= "fail"
     @failTime= time
+    return 0
   end
 
   def recover
@@ -136,6 +151,18 @@ class Site
     @lm= LM.new(@s_id, @dm.variableTable)
     return 0
   end
+  
+  def addRep(v_id)
+    @dm.addRep(v_id)
+    @lm.addRep(v_id)
+    return 0
+  end
+  
+  def rmRep(v_id)
+    @dm.rmRep(v_id)
+    @lm.rmRep(v_id)
+  end
+  
 end
 
 class SiteHelper

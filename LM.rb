@@ -1,11 +1,17 @@
-# Lock Manager
-# LockTable: variableID => lock
+require './Lock.rb'
+require 'pp'
 
-load 'Lock.rb'
-
+# Lock Manager: Used to maintain locks for the whole site
 class LM
 
+###### Variables
+  # The site ID for this LM
+  attr_reader :s_id
+  
+  # Lock Table: Variable ID => lock
   attr_reader :lockTable
+
+###### Methods
 
   def initialize(s_id, variableTable)
     @s_id= s_id
@@ -15,8 +21,19 @@ class LM
     end
   end
 
-  #sucess:
-  #fail:
+  # Assign a new lock for new variable
+  def addRep(v_id)
+    @lockTable[v_id]=Lock.new(@v_id)
+  end
+  
+  # Remove variable and its lock
+  def rmRep(v_id)
+    @lockTable.delete(v_id)
+  end
+
+  # Return whether the transaction can read (success or blocked)
+  # * sucess: assign a read lock to the transaction
+  # * blocked: return the ids of the transactions it is waiting for
   def readV(t_id, v_id)
     if @lockTable[v_id].status== "null" or @lockTable[v_id].status== "read"
       @lockTable[v_id].lock("read", t_id)
@@ -28,7 +45,9 @@ class LM
     ["blocked", @lockTable[v_id].ownerTable.keys]
   end
 
-  #yes or no
+  # Return whether the transaction can write (yes or no)
+  # * yes: return nil value
+  # * no: return the ids of the transaction it is waiting for
   def write?(t_id, v_id)
     if @lockTable[v_id].status== "null" then
       return ["yes", nil]
@@ -49,10 +68,13 @@ class LM
     end
   end
 
+  # Assign the write lock to the transacion 
   def writeV(t_id, v_id)
     @lockTable[v_id].lock("write", t_id)
   end
 
+  # * Remove all the locks for the transaction
+  # * Return the ids of all the variables which have write locks for the transactions
   def endT(t_id)
     vs= Array.new
     @lockTable.each do |v_id, l|
