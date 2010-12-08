@@ -128,13 +128,13 @@ class TM
 
   def failS(s_id)
     s = "site#{s_id}"
-    @rpcc[s].call("Site.fail", @globalTime)
+    @rpcc[s].call_async("Site.fail", @globalTime)
     return "\n\t Site#{s_id} fails"
   end
 
   def recoverS(s_id)
     s = "site#{s_id}"
-    @rpcc[s].call("Site.recover")
+    @rpcc[s].call_async("Site.recover")
     return "\n\t Site#{s_id} recovers"
   end
 
@@ -178,7 +178,7 @@ class TM
           messageArray = [m.time, m.t_id, m.type, m.v_id, m.value, m.s_id, m.result, m.var]
           messagesStringArray << messageArray.to_s
         end
-        rmsStringArray = @rpcc[s_id].call("Site.getMessage", messagesStringArray)
+        rmsStringArray = @rpcc[s_id].call_async("Site.getMessage", messagesStringArray)
         pp rmsStringArray
         rms = []
         rmsStringArray.each { |s| rms << Message.new(*eval(s)) }

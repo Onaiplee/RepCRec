@@ -16,7 +16,7 @@ class TM
   end
 
   def read(opts)
-    @server.call("TransactionManager.read", opts)
+    @server.call_async("TransactionManager.read", opts)
   end
 end
     
@@ -136,29 +136,32 @@ end
 # * Start an UIControl to communicate with user
 # * Start a TM
 if $0 == __FILE__
-  #if ARGV = []
-  #  puts "Usage: ruby UIControl.rb [inputfile] [outputfile]"
-  #  puts "If no inputfile or outputfile, STDIN or STDOUT is the default."
-  #end
-  tm = TM.new
-  if ARGV.empty?
-    g = UIController.new(tm)
-  else
-    input = STDIN
-    output = STDOUT
-    step = false
-    ARGV.each do |arg|
-      if arg =~ /--with_input/
-        input = arg.split('=')[1]
-        input.strip!
-      elsif arg =~ /--with_output/
-        output = arg.split('=')[1]
-        output.strip!
-      elsif arg =~ /--with_single/
-        step = true
-      end
-    end
-    g = UIController.new(tm, input, output, step)
+  if ARGV == []
+    puts "Usage: UIControl.rb [-d] [--with_input=inputfile] [--with_output=outputfile] [--with_single_step]"
+    puts "       If no input or output file arguments, STDIO and STDOUT is for default."
+    puts "       --with_single_step enables the single step mode to run the test file."
   end
-  g.run
+  if ARGV[0] == "-d"
+    tm = TM.new
+    if ARGV.empty?
+      g = UIController.new(tm)
+    else
+      input = STDIN
+      output = STDOUT
+      step = false
+      ARGV.each do |arg|
+        if arg =~ /--with_input/
+          input = arg.split('=')[1]
+          input.strip!
+        elsif arg =~ /--with_output/
+          output = arg.split('=')[1]
+          output.strip!
+        elsif arg =~ /--with_single/
+          step = true
+        end
+      end
+      g = UIController.new(tm, input, output, step)
+    end
+    g.run
+  end
 end

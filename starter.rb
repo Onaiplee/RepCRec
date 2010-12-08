@@ -16,7 +16,7 @@ class Starter
       if (pid)
         @pidTable << pid
       else
-        server = XMLRPC::Server.new(port)
+        server = XMLRPC::Server.new(port, "127.0.0.1", 20)
         server.add_handler("Site", Site.new(s, port))
         server.serve
         exit
