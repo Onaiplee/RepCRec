@@ -222,11 +222,22 @@ class TM
         loop_max= value.length
       end
     end
+    voidTable = Hash.new
+    @siteStatusTable.each do |s_id, status|
+      voidTable[s_id] = Array.new
+    end
+    @transactionTable.each do |t_id, t|
+      t.accessVariableTable.each do |s_id, vs|
+        vs.each do |v|
+          voidTable[s_id]<< v
+        end
+      end
+    end
     loop_max.downto(min).each do |i|
       @siteRepTable.each do |key, value|
         if value.length == i and @siteStatusTable[key] == "live" and @siteRepTable[s].length < min
           @siteRepTable[key].reverse.each do |v|
-            if not @siteRepTable[s].include?(v)
+            if not @siteRepTable[s].include?(v) and not voidTable[s].include?(v)
               @siteRepTable[s]<<v
               @siteRepTable[key].delete(v)
               @variableTable[v]<<s
@@ -455,11 +466,6 @@ class TM
     @debug.puts " "
     return output
   end
-
-  def returnMessage(rms)
-  end
-
-
 
 end
 
